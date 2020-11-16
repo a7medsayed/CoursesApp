@@ -1,0 +1,478 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="CoursesDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="admin">
+          <Key>
+            <PropertyRef Name="admin_id" />
+          </Key>
+          <Property Name="admin_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="admin_name" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="admin_email" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="admin_password" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="category">
+          <Key>
+            <PropertyRef Name="ctg_id" />
+          </Key>
+          <Property Name="ctg_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ctg_name" Type="nvarchar" MaxLength="50" />
+          <Property Name="ctg_parent_id" Type="int" />
+        </EntityType>
+        <EntityType Name="course">
+          <Key>
+            <PropertyRef Name="course_id" />
+          </Key>
+          <Property Name="course_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="course_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="course_creation_date" Type="datetime" Nullable="false" />
+          <Property Name="course_ctg_id" Type="int" Nullable="false" />
+          <Property Name="course_trainer_id" Type="int" />
+          <Property Name="course_description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="course_lessons">
+          <Key>
+            <PropertyRef Name="course_lessons_id" />
+          </Key>
+          <Property Name="course_lessons_id" Type="int" Nullable="false" />
+          <Property Name="course_lessons_title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="course_lessons_course_id" Type="int" Nullable="false" />
+          <Property Name="course_lessons_order_number" Type="int" />
+        </EntityType>
+        <EntityType Name="course_trainee">
+          <Key>
+            <PropertyRef Name="course_trainee_trainee_id" />
+            <PropertyRef Name="course_trainee_course_id" />
+          </Key>
+          <Property Name="course_trainee_trainee_id" Type="int" Nullable="false" />
+          <Property Name="course_trainee_course_id" Type="int" Nullable="false" />
+          <Property Name="course_trainee_registration_date" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="trainee">
+          <Key>
+            <PropertyRef Name="trainee_id" />
+          </Key>
+          <Property Name="trainee_id" Type="int" Nullable="false" />
+          <Property Name="trainee_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="trainee_email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="trainee_password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="trainee_creation_date" Type="datetime" Nullable="false" />
+          <Property Name="trainee_is_active" Type="bit" />
+        </EntityType>
+        <EntityType Name="trainer">
+          <Key>
+            <PropertyRef Name="trainer_id" />
+          </Key>
+          <Property Name="trainer_id" Type="int" Nullable="false" />
+          <Property Name="trainer_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="trainer_email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="trainer_description" Type="nvarchar(max)" />
+          <Property Name="trainer_creation_date" Type="datetime" Nullable="false" />
+          <Property Name="trainer_website" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_category_category_id">
+          <End Role="category" Type="Self.category" Multiplicity="0..1" />
+          <End Role="category1" Type="Self.category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category">
+              <PropertyRef Name="ctg_id" />
+            </Principal>
+            <Dependent Role="category1">
+              <PropertyRef Name="ctg_parent_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_category_id">
+          <End Role="category" Type="Self.category" Multiplicity="1" />
+          <End Role="course" Type="Self.course" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category">
+              <PropertyRef Name="ctg_id" />
+            </Principal>
+            <Dependent Role="course">
+              <PropertyRef Name="course_ctg_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_lessons_course_lessons_id">
+          <End Role="course" Type="Self.course" Multiplicity="1" />
+          <End Role="course_lessons" Type="Self.course_lessons" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="course">
+              <PropertyRef Name="course_id" />
+            </Principal>
+            <Dependent Role="course_lessons">
+              <PropertyRef Name="course_lessons_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_trainee_course_id">
+          <End Role="course" Type="Self.course" Multiplicity="1" />
+          <End Role="course_trainee" Type="Self.course_trainee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="course">
+              <PropertyRef Name="course_id" />
+            </Principal>
+            <Dependent Role="course_trainee">
+              <PropertyRef Name="course_trainee_course_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_trainee_course_trainee">
+          <End Role="course_trainee" Type="Self.course_trainee" Multiplicity="1" />
+          <End Role="course_trainee1" Type="Self.course_trainee" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="course_trainee">
+              <PropertyRef Name="course_trainee_trainee_id" />
+              <PropertyRef Name="course_trainee_course_id" />
+            </Principal>
+            <Dependent Role="course_trainee1">
+              <PropertyRef Name="course_trainee_trainee_id" />
+              <PropertyRef Name="course_trainee_course_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_trainer_id">
+          <End Role="trainer" Type="Self.trainer" Multiplicity="0..1" />
+          <End Role="course" Type="Self.course" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="trainer">
+              <PropertyRef Name="trainer_id" />
+            </Principal>
+            <Dependent Role="course">
+              <PropertyRef Name="course_trainer_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CoursesDBModelStoreContainer">
+          <EntitySet Name="admin" EntityType="Self.admin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="category" EntityType="Self.category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="course" EntityType="Self.course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="course_lessons" EntityType="Self.course_lessons" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="course_trainee" EntityType="Self.course_trainee" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="trainee" EntityType="Self.trainee" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="trainer" EntityType="Self.trainer" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_category_category_id" Association="Self.FK_category_category_id">
+            <End Role="category" EntitySet="category" />
+            <End Role="category1" EntitySet="category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_category_id" Association="Self.FK_course_category_id">
+            <End Role="category" EntitySet="category" />
+            <End Role="course" EntitySet="course" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_lessons_course_lessons_id" Association="Self.FK_course_lessons_course_lessons_id">
+            <End Role="course" EntitySet="course" />
+            <End Role="course_lessons" EntitySet="course_lessons" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_trainee_course_id" Association="Self.FK_course_trainee_course_id">
+            <End Role="course" EntitySet="course" />
+            <End Role="course_trainee" EntitySet="course_trainee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_trainee_course_trainee" Association="Self.FK_course_trainee_course_trainee">
+            <End Role="course_trainee" EntitySet="course_trainee" />
+            <End Role="course_trainee1" EntitySet="course_trainee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_trainer_id" Association="Self.FK_course_trainer_id">
+            <End Role="trainer" EntitySet="trainer" />
+            <End Role="course" EntitySet="course" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CoursesDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="admin">
+          <Key>
+            <PropertyRef Name="admin_id" />
+          </Key>
+          <Property Name="admin_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="admin_name" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="admin_email" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="admin_password" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="category">
+          <Key>
+            <PropertyRef Name="ctg_id" />
+          </Key>
+          <Property Name="ctg_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ctg_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ctg_parent_id" Type="Int32" />
+          <NavigationProperty Name="category1" Relationship="Self.FK_category_category_id" FromRole="category" ToRole="category1" />
+          <NavigationProperty Name="category2" Relationship="Self.FK_category_category_id" FromRole="category1" ToRole="category" />
+          <NavigationProperty Name="courses" Relationship="Self.FK_course_category_id" FromRole="category" ToRole="course" />
+        </EntityType>
+        <EntityType Name="course">
+          <Key>
+            <PropertyRef Name="course_id" />
+          </Key>
+          <Property Name="course_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="course_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="course_creation_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="course_ctg_id" Type="Int32" Nullable="false" />
+          <Property Name="course_trainer_id" Type="Int32" />
+          <Property Name="course_description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="category" Relationship="Self.FK_course_category_id" FromRole="course" ToRole="category" />
+          <NavigationProperty Name="course_lessons" Relationship="Self.FK_course_lessons_course_lessons_id" FromRole="course" ToRole="course_lessons" />
+          <NavigationProperty Name="course_trainee" Relationship="Self.FK_course_trainee_course_id" FromRole="course" ToRole="course_trainee" />
+          <NavigationProperty Name="trainer" Relationship="Self.FK_course_trainer_id" FromRole="course" ToRole="trainer" />
+        </EntityType>
+        <EntityType Name="course_lessons">
+          <Key>
+            <PropertyRef Name="course_lessons_id" />
+          </Key>
+          <Property Name="course_lessons_id" Type="Int32" Nullable="false" />
+          <Property Name="course_lessons_title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="course_lessons_course_id" Type="Int32" Nullable="false" />
+          <Property Name="course_lessons_order_number" Type="Int32" />
+          <NavigationProperty Name="course" Relationship="Self.FK_course_lessons_course_lessons_id" FromRole="course_lessons" ToRole="course" />
+        </EntityType>
+        <EntityType Name="course_trainee">
+          <Key>
+            <PropertyRef Name="course_trainee_trainee_id" />
+            <PropertyRef Name="course_trainee_course_id" />
+          </Key>
+          <Property Name="course_trainee_trainee_id" Type="Int32" Nullable="false" />
+          <Property Name="course_trainee_course_id" Type="Int32" Nullable="false" />
+          <Property Name="course_trainee_registration_date" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="course" Relationship="Self.FK_course_trainee_course_id" FromRole="course_trainee" ToRole="course" />
+          <NavigationProperty Name="course_trainee1" Relationship="Self.FK_course_trainee_course_trainee" FromRole="course_trainee" ToRole="course_trainee1" />
+          <NavigationProperty Name="course_trainee2" Relationship="Self.FK_course_trainee_course_trainee" FromRole="course_trainee1" ToRole="course_trainee" />
+        </EntityType>
+        <EntityType Name="trainee">
+          <Key>
+            <PropertyRef Name="trainee_id" />
+          </Key>
+          <Property Name="trainee_id" Type="Int32" Nullable="false" />
+          <Property Name="trainee_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="trainee_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="trainee_password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="trainee_creation_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="trainee_is_active" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="trainer">
+          <Key>
+            <PropertyRef Name="trainer_id" />
+          </Key>
+          <Property Name="trainer_id" Type="Int32" Nullable="false" />
+          <Property Name="trainer_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="trainer_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="trainer_description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="trainer_creation_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="trainer_website" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="courses" Relationship="Self.FK_course_trainer_id" FromRole="trainer" ToRole="course" />
+        </EntityType>
+        <Association Name="FK_category_category_id">
+          <End Role="category" Type="Self.category" Multiplicity="0..1" />
+          <End Role="category1" Type="Self.category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category">
+              <PropertyRef Name="ctg_id" />
+            </Principal>
+            <Dependent Role="category1">
+              <PropertyRef Name="ctg_parent_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_category_id">
+          <End Role="category" Type="Self.category" Multiplicity="1" />
+          <End Role="course" Type="Self.course" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category">
+              <PropertyRef Name="ctg_id" />
+            </Principal>
+            <Dependent Role="course">
+              <PropertyRef Name="course_ctg_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_lessons_course_lessons_id">
+          <End Role="course" Type="Self.course" Multiplicity="1" />
+          <End Role="course_lessons" Type="Self.course_lessons" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="course">
+              <PropertyRef Name="course_id" />
+            </Principal>
+            <Dependent Role="course_lessons">
+              <PropertyRef Name="course_lessons_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_trainee_course_id">
+          <End Role="course" Type="Self.course" Multiplicity="1" />
+          <End Role="course_trainee" Type="Self.course_trainee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="course">
+              <PropertyRef Name="course_id" />
+            </Principal>
+            <Dependent Role="course_trainee">
+              <PropertyRef Name="course_trainee_course_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_trainer_id">
+          <End Role="trainer" Type="Self.trainer" Multiplicity="0..1" />
+          <End Role="course" Type="Self.course" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="trainer">
+              <PropertyRef Name="trainer_id" />
+            </Principal>
+            <Dependent Role="course">
+              <PropertyRef Name="course_trainer_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_course_trainee_course_trainee">
+          <End Role="course_trainee" Type="Self.course_trainee" Multiplicity="1" />
+          <End Role="course_trainee1" Type="Self.course_trainee" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="course_trainee">
+              <PropertyRef Name="course_trainee_trainee_id" />
+              <PropertyRef Name="course_trainee_course_id" />
+            </Principal>
+            <Dependent Role="course_trainee1">
+              <PropertyRef Name="course_trainee_trainee_id" />
+              <PropertyRef Name="course_trainee_course_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CoursesDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="admins" EntityType="Self.admin" />
+          <EntitySet Name="categories" EntityType="Self.category" />
+          <EntitySet Name="courses" EntityType="Self.course" />
+          <EntitySet Name="course_lessons" EntityType="Self.course_lessons" />
+          <EntitySet Name="course_trainee" EntityType="Self.course_trainee" />
+          <EntitySet Name="trainees" EntityType="Self.trainee" />
+          <EntitySet Name="trainers" EntityType="Self.trainer" />
+          <AssociationSet Name="FK_category_category_id" Association="Self.FK_category_category_id">
+            <End Role="category" EntitySet="categories" />
+            <End Role="category1" EntitySet="categories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_category_id" Association="Self.FK_course_category_id">
+            <End Role="category" EntitySet="categories" />
+            <End Role="course" EntitySet="courses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_lessons_course_lessons_id" Association="Self.FK_course_lessons_course_lessons_id">
+            <End Role="course" EntitySet="courses" />
+            <End Role="course_lessons" EntitySet="course_lessons" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_trainee_course_id" Association="Self.FK_course_trainee_course_id">
+            <End Role="course" EntitySet="courses" />
+            <End Role="course_trainee" EntitySet="course_trainee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_trainer_id" Association="Self.FK_course_trainer_id">
+            <End Role="trainer" EntitySet="trainers" />
+            <End Role="course" EntitySet="courses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_course_trainee_course_trainee" Association="Self.FK_course_trainee_course_trainee">
+            <End Role="course_trainee" EntitySet="course_trainee" />
+            <End Role="course_trainee1" EntitySet="course_trainee" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CoursesDBModelStoreContainer" CdmEntityContainer="CoursesDBEntities">
+          <EntitySetMapping Name="admins">
+            <EntityTypeMapping TypeName="CoursesDBModel.admin">
+              <MappingFragment StoreEntitySet="admin">
+                <ScalarProperty Name="admin_id" ColumnName="admin_id" />
+                <ScalarProperty Name="admin_name" ColumnName="admin_name" />
+                <ScalarProperty Name="admin_email" ColumnName="admin_email" />
+                <ScalarProperty Name="admin_password" ColumnName="admin_password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="categories">
+            <EntityTypeMapping TypeName="CoursesDBModel.category">
+              <MappingFragment StoreEntitySet="category">
+                <ScalarProperty Name="ctg_id" ColumnName="ctg_id" />
+                <ScalarProperty Name="ctg_name" ColumnName="ctg_name" />
+                <ScalarProperty Name="ctg_parent_id" ColumnName="ctg_parent_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="courses">
+            <EntityTypeMapping TypeName="CoursesDBModel.course">
+              <MappingFragment StoreEntitySet="course">
+                <ScalarProperty Name="course_id" ColumnName="course_id" />
+                <ScalarProperty Name="course_name" ColumnName="course_name" />
+                <ScalarProperty Name="course_creation_date" ColumnName="course_creation_date" />
+                <ScalarProperty Name="course_ctg_id" ColumnName="course_ctg_id" />
+                <ScalarProperty Name="course_trainer_id" ColumnName="course_trainer_id" />
+                <ScalarProperty Name="course_description" ColumnName="course_description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="course_lessons">
+            <EntityTypeMapping TypeName="CoursesDBModel.course_lessons">
+              <MappingFragment StoreEntitySet="course_lessons">
+                <ScalarProperty Name="course_lessons_id" ColumnName="course_lessons_id" />
+                <ScalarProperty Name="course_lessons_title" ColumnName="course_lessons_title" />
+                <ScalarProperty Name="course_lessons_course_id" ColumnName="course_lessons_course_id" />
+                <ScalarProperty Name="course_lessons_order_number" ColumnName="course_lessons_order_number" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="course_trainee">
+            <EntityTypeMapping TypeName="CoursesDBModel.course_trainee">
+              <MappingFragment StoreEntitySet="course_trainee">
+                <ScalarProperty Name="course_trainee_trainee_id" ColumnName="course_trainee_trainee_id" />
+                <ScalarProperty Name="course_trainee_course_id" ColumnName="course_trainee_course_id" />
+                <ScalarProperty Name="course_trainee_registration_date" ColumnName="course_trainee_registration_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="trainees">
+            <EntityTypeMapping TypeName="CoursesDBModel.trainee">
+              <MappingFragment StoreEntitySet="trainee">
+                <ScalarProperty Name="trainee_id" ColumnName="trainee_id" />
+                <ScalarProperty Name="trainee_name" ColumnName="trainee_name" />
+                <ScalarProperty Name="trainee_email" ColumnName="trainee_email" />
+                <ScalarProperty Name="trainee_password" ColumnName="trainee_password" />
+                <ScalarProperty Name="trainee_creation_date" ColumnName="trainee_creation_date" />
+                <ScalarProperty Name="trainee_is_active" ColumnName="trainee_is_active" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="trainers">
+            <EntityTypeMapping TypeName="CoursesDBModel.trainer">
+              <MappingFragment StoreEntitySet="trainer">
+                <ScalarProperty Name="trainer_id" ColumnName="trainer_id" />
+                <ScalarProperty Name="trainer_name" ColumnName="trainer_name" />
+                <ScalarProperty Name="trainer_email" ColumnName="trainer_email" />
+                <ScalarProperty Name="trainer_description" ColumnName="trainer_description" />
+                <ScalarProperty Name="trainer_creation_date" ColumnName="trainer_creation_date" />
+                <ScalarProperty Name="trainer_website" ColumnName="trainer_website" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
